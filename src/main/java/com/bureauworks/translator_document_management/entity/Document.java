@@ -1,5 +1,6 @@
 package com.bureauworks.translator_document_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class Document {
     @Lob
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
     private String location;
 
     @NotBlank(message = "O autor é obrigatório.")
@@ -34,6 +36,31 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "translator_id", nullable = false)
     private Translator translator;
+
+    @ManyToOne
+    @JoinColumn(name = "document_import_id", nullable = true)
+    @JsonBackReference
+    private DocumentImport documentImport;
+
+    public Document() {
+    }
+
+    public Document(String subject, String content, String location, String author, Translator translator) {
+        this.subject = subject;
+        this.content = content;
+        this.location = location;
+        this.author = author;
+        this.translator = translator;
+    }
+
+    public Document(String subject, String content, String location, String author, Translator translator, DocumentImport documentImport) {
+        this.subject = subject;
+        this.content = content;
+        this.location = location;
+        this.author = author;
+        this.translator = translator;
+        this.documentImport = documentImport;
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -78,5 +105,13 @@ public class Document {
 
     public void setTranslator(Translator translator) {
         this.translator = translator;
+    }
+
+    public DocumentImport getDocumentImport() {
+        return documentImport;
+    }
+
+    public void setDocumentImport(DocumentImport documentImport) {
+        this.documentImport = documentImport;
     }
 }

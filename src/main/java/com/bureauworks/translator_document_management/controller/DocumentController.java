@@ -1,5 +1,7 @@
 package com.bureauworks.translator_document_management.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.bureauworks.translator_document_management.entity.Document;
@@ -9,16 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/documents")
+@RequestMapping("/api/v1/documents")
+@Tag(name = "DocumentController", description = "Gerenciamento de documentos")
 public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
 
+    @Operation(summary = "Obtém todos os documentos", description = "Retorna uma lista paginada de todos os documentos")
     @GetMapping
     public ResponseEntity<Page<Document>> getAllDocuments(@RequestParam(defaultValue = "0") int page,
                                                           @RequestParam(defaultValue = "10") int size) {
@@ -27,6 +29,8 @@ public class DocumentController {
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
+    @Operation(summary = "Pesquisa documentos",
+            description = "Retorna uma lista paginada de documentos que correspondem ao texto de pesquisa")
     @GetMapping("/search")
     public ResponseEntity<Page<Document>> searchDocuments(
             @RequestParam String text,
@@ -37,6 +41,8 @@ public class DocumentController {
         return new ResponseEntity<>(documents, HttpStatus.OK);
     }
 
+    @Operation(summary = "Cria um novo documento",
+            description = "Cria um novo documento e retorna os detalhes do documento criado")
     @PostMapping
     public ResponseEntity<?> createDocument(@RequestBody Document document) {
         try {
@@ -47,18 +53,8 @@ public class DocumentController {
         }
     }
 
-    @PostMapping("/upload")
-    public CompletableFuture<String> uploadDocuments(@RequestParam("file") MultipartFile file) {
-        return documentService.saveDocumentsFromCSV(file)
-                .thenApply(messages -> {
-                    if (messages.isEmpty()) {
-                        return "Todos os documentos foram cadastrados com sucesso.";
-                    } else {
-                        return "Documentos cadastrados! exceto os documentos:\n" + String.join("\n", messages);
-                    }
-                });
-    }
-
+    @Operation(summary = "Obtém um documento pelo ID",
+            description = "Retorna os detalhes de um documento pelo seu ID")
     @GetMapping("/{id}")
     public ResponseEntity<Document> getDocumentById(@PathVariable Long id) {
         Document document = documentService.findById(id);
@@ -68,6 +64,8 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
+    @Operation(summary = "Atualiza um documento",
+            description = "Atualiza os detalhes de um documento existente pelo seu ID")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDocument(@PathVariable Long id, @RequestBody Document documentDetails) {
         try {
@@ -91,6 +89,7 @@ public class DocumentController {
         }
     }
 
+    @Operation(summary = "Deleta um documento", description = "Remove um documento existente pelo seu ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
         Document document = documentService.findById(id);

@@ -10,6 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.json.JSONObject;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 @Service
 public class OpenAIService {
 
@@ -17,6 +20,7 @@ public class OpenAIService {
     private String apiKey;
 
     private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    private static final Pattern LANGUAGE_CODE_PATTERN = Pattern.compile("^[a-z]{2}-[a-z]{2}$");
 
     public String detectLanguage(String content) {
         RestTemplate restTemplate = new RestTemplate();
@@ -48,7 +52,15 @@ public class OpenAIService {
         ResponseEntity<String> response = restTemplate.exchange(OPENAI_API_URL, HttpMethod.POST, entity, String.class);
 
         JSONObject responseJson = new JSONObject(response.getBody());
-        return responseJson.getJSONArray("choices").getJSONObject(0)
+        String languageCode = responseJson.getJSONArray("choices").getJSONObject(0)
                 .getJSONObject("message").getString("content").trim().toLowerCase();
+
+        // Validate the format of the response
+        Matcher matcher = LANGUAGE_CODE_PATTERN.matcher(languageCode);
+        if (matcher.matches()) {
+            return languageCode;
+        } else {
+            return "";
+        }
     }
 }
