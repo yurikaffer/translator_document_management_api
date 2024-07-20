@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "document", indexes = {
         @Index(name = "idx_document_subject", columnList = "subject"),
@@ -42,6 +44,9 @@ public class Document {
     @JsonBackReference
     private DocumentImport documentImport;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     public Document() {
     }
 
@@ -60,6 +65,11 @@ public class Document {
         this.author = author;
         this.translator = translator;
         this.documentImport = documentImport;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -113,5 +123,13 @@ public class Document {
 
     public void setDocumentImport(DocumentImport documentImport) {
         this.documentImport = documentImport;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

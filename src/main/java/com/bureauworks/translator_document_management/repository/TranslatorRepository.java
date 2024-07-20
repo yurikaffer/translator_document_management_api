@@ -7,11 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.bureauworks.translator_document_management.entity.Translator;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 @Repository
 public interface TranslatorRepository extends JpaRepository<Translator, Long> {
     boolean existsByEmail(String email);
     Translator findByEmail(String email);
+    List<Translator> findAll(Sort sort);
 
     @Query("SELECT t FROM Translator t WHERE " +
             "LOWER(t.name) LIKE LOWER(CONCAT('%', :text, '%')) OR " +

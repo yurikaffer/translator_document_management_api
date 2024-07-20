@@ -5,7 +5,6 @@ import com.bureauworks.translator_document_management.entity.DocumentImport;
 import com.bureauworks.translator_document_management.entity.ImportError;
 import com.bureauworks.translator_document_management.entity.Translator;
 import com.bureauworks.translator_document_management.repository.DocumentImportRepository;
-import com.bureauworks.translator_document_management.repository.DocumentRepository;
 import com.bureauworks.translator_document_management.repository.TranslatorRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;

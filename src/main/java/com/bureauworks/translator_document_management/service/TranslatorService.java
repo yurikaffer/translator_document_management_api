@@ -4,6 +4,7 @@ import com.bureauworks.translator_document_management.repository.TranslatorRepos
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.bureauworks.translator_document_management.entity.Translator;
 import com.bureauworks.translator_document_management.exception.EmailAlreadyExistsException;
