@@ -4,14 +4,12 @@ import com.bureauworks.translator_document_management.repository.TranslatorRepos
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.bureauworks.translator_document_management.entity.Translator;
 import com.bureauworks.translator_document_management.exception.EmailAlreadyExistsException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.cache.annotation.Cacheable;

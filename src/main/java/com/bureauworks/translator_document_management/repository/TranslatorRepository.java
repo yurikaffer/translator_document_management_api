@@ -15,7 +15,6 @@ import java.util.List;
 public interface TranslatorRepository extends JpaRepository<Translator, Long> {
     boolean existsByEmail(String email);
     Translator findByEmail(String email);
-    List<Translator> findAll(Sort sort);
 
     @Query("SELECT t FROM Translator t WHERE " +
             "LOWER(t.name) LIKE LOWER(CONCAT('%', :text, '%')) OR " +

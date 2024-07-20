@@ -1,12 +1,9 @@
 package com.bureauworks.translator_document_management.service;
 
-import com.bureauworks.translator_document_management.entity.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.bureauworks.translator_document_management.entity.Document;
 import com.bureauworks.translator_document_management.repository.DocumentRepository;
-import com.bureauworks.translator_document_management.repository.TranslatorRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,8 +22,6 @@ public class DocumentService {
     @Autowired
     private DocumentRepository documentRepository;
 
-    @Autowired
-    private TranslatorRepository translatorRepository;
 
     @Autowired
     private Validator validator;
