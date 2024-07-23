@@ -1,6 +1,10 @@
 package com.bureauworks.translator_document_management.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,6 +48,14 @@ public class TranslatorController {
 
     @Operation(summary = "Cria um novo tradutor",
             description = "Cria um novo tradutor e retorna os detalhes do tradutor criado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Tradutor criado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Translator.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "409", description = "E-mail já existe",
+                    content = @Content(schema = @Schema(implementation = String.class)))
+    })
     @PostMapping
     public ResponseEntity<?> createTranslator(@RequestBody Translator translator) {
         try {
@@ -69,6 +81,16 @@ public class TranslatorController {
 
     @Operation(summary = "Atualiza um tradutor",
             description = "Atualiza os detalhes de um tradutor existente através do seu ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tradutor atualizado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Translator.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Tradutor não encontrado",
+                    content = @Content(schema = @Schema(implementation = Void.class))),
+            @ApiResponse(responseCode = "409", description = "E-mail já existe",
+                    content = @Content(schema = @Schema(implementation = String.class)))
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTranslator(@PathVariable Long id, @RequestBody Translator newTranslator) {
         try {

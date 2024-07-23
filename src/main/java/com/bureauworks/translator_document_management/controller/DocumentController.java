@@ -1,6 +1,10 @@
 package com.bureauworks.translator_document_management.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +47,12 @@ public class DocumentController {
 
     @Operation(summary = "Cria um novo documento",
             description = "Cria um novo documento e retorna os detalhes do documento criado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Documento criado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Document.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content(schema = @Schema(implementation = String.class)))
+    })
     @PostMapping
     public ResponseEntity<?> createDocument(@RequestBody Document document) {
         try {
@@ -66,6 +76,14 @@ public class DocumentController {
 
     @Operation(summary = "Atualiza um documento",
             description = "Atualiza os detalhes de um documento existente pelo seu ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Documento atualizado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Document.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Documento não encontrado",
+                    content = @Content(schema = @Schema(implementation = Void.class)))
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDocument(@PathVariable Long id, @RequestBody Document documentDetails) {
         try {

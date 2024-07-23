@@ -2,6 +2,11 @@ package com.bureauworks.translator_document_management.controller;
 
 import com.bureauworks.translator_document_management.entity.DocumentImport;
 import com.bureauworks.translator_document_management.service.DocumentImportService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +64,18 @@ public class DocumentImportController {
 
     @Operation(summary = "Importa documentos",
             description = "Importa documentos a partir de um arquivo CSV")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Documentos importados com sucesso",
+                    content = @Content(schema = @Schema(implementation = DocumentImport.class))),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida",
+                    content = @Content(schema = @Schema(implementation = String.class)))
+    })
     @PostMapping("/upload")
-    public CompletableFuture<DocumentImport> uploadDocuments(@RequestParam("file") MultipartFile file) {
+    public CompletableFuture<DocumentImport> uploadDocuments(
+            @Parameter(description = "Arquivo CSV para importação de documentos", required = true,
+                    content = @Content(mediaType = "multipart/form-data"),
+                    schema = @Schema(type = "string", format = "binary"))
+            @RequestParam("file") MultipartFile file) {
         return documentImportService.saveDocumentsFromCSV(file);
     }
 }
