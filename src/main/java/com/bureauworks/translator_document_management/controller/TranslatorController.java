@@ -49,8 +49,10 @@ public class TranslatorController {
         try {
             Translator createdTranslator = translatorService.save(translator);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTranslator);
-        } catch (EmailAlreadyExistsException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
@@ -68,20 +70,19 @@ public class TranslatorController {
     @Operation(summary = "Atualiza um tradutor",
             description = "Atualiza os detalhes de um tradutor existente através do seu ID")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTranslator(@PathVariable Long id, @RequestBody Translator translatorDetails) {
+    public ResponseEntity<?> updateTranslator(@PathVariable Long id, @RequestBody Translator newTranslator) {
         try {
             Translator translator = translatorService.findById(id);
             if (translator == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            translator.setName(translatorDetails.getName());
-            translator.setEmail(translatorDetails.getEmail());
-            translator.setSourceLanguage(translatorDetails.getSourceLanguage());
-            translator.setTargetLanguage(translatorDetails.getTargetLanguage());
-            Translator updatedTranslator = translatorService.save(translator);
+
+            Translator updatedTranslator = translatorService.update(translator, newTranslator);
             return ResponseEntity.ok(updatedTranslator);
-        } catch (EmailAlreadyExistsException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (EmailAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 

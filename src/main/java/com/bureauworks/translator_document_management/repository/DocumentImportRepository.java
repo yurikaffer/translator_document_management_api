@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 public interface DocumentImportRepository extends JpaRepository<DocumentImport, Long> {
 
     @Query("SELECT d FROM DocumentImport d WHERE " +
-            "LOWER(d.fileName) LIKE LOWER(CONCAT('%', :text, '%'))")
+            "LOWER(d.fileName) LIKE LOWER(CONCAT('%', :text, '%')) ORDER BY d.createdAt DESC")
     Page<DocumentImport> searchByText(@Param("text") String text, Pageable pageable);
+
+    @Query("SELECT d FROM DocumentImport d ORDER BY d.createdAt DESC")
+    Page<DocumentImport> findAllByOrderByCreateAtDesc(Pageable pageable);
 }

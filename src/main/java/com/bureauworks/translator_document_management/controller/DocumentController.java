@@ -79,11 +79,9 @@ public class DocumentController {
             document.setContent(documentDetails.getContent());
             document.setLocation(documentDetails.getLocation());
             document.setAuthor(documentDetails.getAuthor());
-
             Document updatedDocument = documentService.save(document);
 
             return ResponseEntity.ok(updatedDocument);
-
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.bureauworks.translator_document_management.entity.Translator;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -18,6 +17,9 @@ public interface TranslatorRepository extends JpaRepository<Translator, Long> {
 
     @Query("SELECT t FROM Translator t WHERE " +
             "LOWER(t.name) LIKE LOWER(CONCAT('%', :text, '%')) OR " +
-            "LOWER(t.email) LIKE LOWER(CONCAT('%', :text, '%'))")
+            "LOWER(t.email) LIKE LOWER(CONCAT('%', :text, '%')) ORDER BY t.createdAt DESC")
     Page<Translator> searchByText(@Param("text") String text, Pageable pageable);
+
+    @Query("SELECT t FROM Translator t ORDER BY t.createdAt DESC")
+    Page<Translator> findAllByOrderByCreateAtDesc(Pageable pageable);
 }

@@ -48,7 +48,7 @@ public class DocumentImportService {
     private OpenAIService openAIService;
 
     public Page<DocumentImport> findAll(Pageable pageable) {
-        return documentImportRepository.findAll(pageable);
+        return documentImportRepository.findAllByOrderByCreateAtDesc(pageable);
     }
 
     public Page<DocumentImport> searchImports(String text, Pageable pageable) {

@@ -12,10 +12,6 @@ import jakarta.validation.Validator;
 
 import java.util.Set;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-
 @Service
 public class DocumentService {
 
@@ -31,7 +27,7 @@ public class DocumentService {
 
     //@Cacheable(value = "documents", key = "#pageable")
     public Page<Document> findAll(Pageable pageable) {
-        return documentRepository.findAll(pageable);
+        return documentRepository.findAllByOrderByCreateAtDesc(pageable);
     }
 
     //@Cacheable(value = "documents", key = "#text")

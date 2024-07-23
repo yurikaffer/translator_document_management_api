@@ -12,10 +12,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import java.util.Set;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-
 @Service
 public class TranslatorService {
 
@@ -27,7 +23,7 @@ public class TranslatorService {
 
     //@Cacheable(value = "translators", key = "#pageable")
     public Page<Translator> findAll(Pageable pageable) {
-        return translatorRepository.findAll(pageable);
+        return translatorRepository.findAllByOrderByCreateAtDesc(pageable);
     }
 
     //@Cacheable(value = "translators", key = "#text")
@@ -37,6 +33,33 @@ public class TranslatorService {
 
     //@CachePut(value = "translators", key = "#translator.id")
     public Translator save(Translator translator) {
+        validateData(translator);
+
+        // Validação de email
+        if (translatorRepository.existsByEmail(translator.getEmail())) {
+            throw new EmailAlreadyExistsException("Este email já está em uso.");
+        }
+        return translatorRepository.save(translator);
+    }
+
+    public Translator update(Translator translator, Translator newTranslator) {
+        validateData(newTranslator);
+
+        // Validação de email
+        if (!newTranslator.getEmail().equals(translator.getEmail()) &&
+                translatorRepository.existsByEmail(newTranslator.getEmail()))
+        {
+                throw new EmailAlreadyExistsException("Este email já está em uso.");
+        }
+
+        translator.setName(newTranslator.getName());
+        translator.setEmail(newTranslator.getEmail());
+        translator.setSourceLanguage(newTranslator.getSourceLanguage());
+        translator.setTargetLanguage(newTranslator.getTargetLanguage());
+        return translatorRepository.save(translator);
+    }
+
+    private void validateData(Translator translator) {
         Set<ConstraintViolation<Translator>> violations = validator.validate(translator);
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -45,13 +68,6 @@ public class TranslatorService {
             }
             throw new IllegalArgumentException(sb.toString());
         }
-
-        // Validação de email duplicado
-        if (translatorRepository.existsByEmail(translator.getEmail())) {
-            throw new EmailAlreadyExistsException("Este email já está em uso.");
-        }
-
-        return translatorRepository.save(translator);
     }
 
     //@Cacheable(value = "translators", key = "#id")
