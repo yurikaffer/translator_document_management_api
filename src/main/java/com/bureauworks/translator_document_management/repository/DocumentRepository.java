@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
@@ -19,4 +21,7 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     @Query("SELECT d FROM Document d ORDER BY d.createdAt DESC")
     Page<Document> findAllByOrderByCreateAtDesc(Pageable pageable);
+
+    @Query("SELECT d FROM Document d WHERE d.translator.id = :id")
+    List<Document> findAllByTranslatorId(@Param("id") Long id);
 }
