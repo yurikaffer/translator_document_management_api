@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -18,24 +19,24 @@ public class DocumentService {
     @Autowired
     private DocumentRepository documentRepository;
 
-
     @Autowired
     private Validator validator;
 
     @Autowired
     private OpenAIService openAIService;
 
-    //@Cacheable(value = "documents", key = "#pageable")
     public Page<Document> findAll(Pageable pageable) {
         return documentRepository.findAllByOrderByCreateAtDesc(pageable);
     }
 
-    //@Cacheable(value = "documents", key = "#text")
+    public List<Document> findAllByTranslatorId(Long id) {
+        return documentRepository.findAllByTranslatorId(id);
+    }
+
     public Page<Document> searchDocuments(String text, Pageable pageable) {
         return documentRepository.searchByText(text, pageable);
     }
 
-    //@CachePut(value = "documents", key = "#document.id")
     public Document save(Document document) {
         validateDocument(document);
         detectAndSetLanguage(document);
@@ -61,12 +62,10 @@ public class DocumentService {
         }
     }
 
-    //@Cacheable(value = "documents", key = "#id")
     public Document findById(Long id) {
         return documentRepository.findById(id).orElse(null);
     }
 
-    //@CacheEvict(value = "documents", key = "#id")
     public void deleteById(Long id) {
         documentRepository.deleteById(id);
     }

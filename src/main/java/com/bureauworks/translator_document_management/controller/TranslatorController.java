@@ -1,5 +1,7 @@
 package com.bureauworks.translator_document_management.controller;
 
+import com.bureauworks.translator_document_management.entity.Document;
+import com.bureauworks.translator_document_management.service.DocumentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,6 +19,8 @@ import com.bureauworks.translator_document_management.entity.Translator;
 import com.bureauworks.translator_document_management.exception.EmailAlreadyExistsException;
 import com.bureauworks.translator_document_management.service.TranslatorService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/translators")
 @Tag(name = "TranslatorController", description = "Gerenciamento de tradutores")
@@ -24,6 +28,9 @@ public class TranslatorController {
 
     @Autowired
     private TranslatorService translatorService;
+
+    @Autowired
+    private DocumentService documentService;
 
     @Operation(summary = "Obtém todos os tradutores", description = "Retorna uma lista paginada de todos os tradutores")
     @GetMapping
@@ -116,6 +123,12 @@ public class TranslatorController {
         if (translator == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
+        List<Document> documents = documentService.findAllByTranslatorId(id);
+        if (!documents.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         translatorService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
